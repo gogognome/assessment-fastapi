@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "assessment-fastapi"
+version = "0.0.1"
+description = "This application implements a REST API for a collection of songs."
+authors = ["Sander Kooijmans"]
+license = "Apache License 2.0"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^4.2.0"
+mypy = "^1.15.0"
+ruff = "^0.11.8"
+types-psycopg2 = "^2.9.21.20250318"
+pytest = "^8.3.5"
+types-pyyaml = "^6.0.12.20250402"
+sqlalchemy2-stubs = "^0.0.2a38"
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = {extras = ["standard"], version = "^0.115.12"}
+psycopg2-binary = "^2.9.10"
+sqlalchemy = "^2.0.40"
+pydantic = "^2.11.4"
+pyyaml = "^6.0.2"
