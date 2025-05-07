@@ -1,3 +1,4 @@
+from fastapi import status
 from starlette.testclient import TestClient
 
 from songs_api.database_access import DatabaseAccess
@@ -6,7 +7,7 @@ from tests.test_data_builder import TdbSong
 
 def test_get_songs_when_no_songs_present(client: TestClient) -> None:
     response = client.get("/songs")
-    assert response.status_code == 200
+    assert response.status_code == status.HTTP_200_OK
     assert response.json() == []
 
 
@@ -17,7 +18,7 @@ def test_get_songs_when_songs_present(database_access: DatabaseAccess, client: T
         TdbSong.create(session, title="The Logical Song")
 
     response = client.get("/songs")
-    assert response.status_code == 200
+    assert response.status_code == status.HTTP_200_OK
     assert response.json() == [
         {
             "artist": "Supertramp",
@@ -53,7 +54,7 @@ def test_registering_new_song_with_valid_parameters(database_access: DatabaseAcc
             "year_of_release": 2025,
         },
     )
-    assert response.status_code == 200
+    assert response.status_code == status.HTTP_201_CREATED
 
     assert response.json() == {
         "artist": "Sander Kooijmans",
@@ -80,7 +81,7 @@ def test_registering_new_song_with_invalid_parameters(database_access: DatabaseA
             "year_of_release": 2025,
         },
     )
-    assert response.status_code == 422
+    assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
     assert response.json() == {
         "detail": [
@@ -111,7 +112,7 @@ def test_updating_existing_song(database_access: DatabaseAccess, client: TestCli
             "year_of_release": 2025,
         },
     )
-    assert response.status_code == 200
+    assert response.status_code == status.HTTP_200_OK
 
     with database_access.get_session() as session:
         database_song = database_access.get_song(session, 1)
@@ -131,7 +132,7 @@ def test_updating_non_existing_song(database_access: DatabaseAccess, client: Tes
             "year_of_release": 2025,
         },
     )
-    assert response.status_code == 404
+    assert response.status_code == status.HTTP_404_NOT_FOUND
     assert response.json() == {"detail": "No song with id 123 exists."}
 
     with database_access.get_session() as session:
@@ -144,7 +145,7 @@ def test_deleting_existing_song(database_access: DatabaseAccess, client: TestCli
         song_id = song.id
 
     response = client.delete(f"/songs/{song_id}")
-    assert response.status_code == 204
+    assert response.status_code == status.HTTP_204_NO_CONTENT
     assert response.content == b""
 
     with database_access.get_session() as session:
@@ -153,5 +154,5 @@ def test_deleting_existing_song(database_access: DatabaseAccess, client: TestCli
 
 def test_deleting_non_existing_song(database_access: DatabaseAccess, client: TestClient) -> None:
     response = client.delete("/songs/123")
-    assert response.status_code == 404
+    assert response.status_code == status.HTTP_404_NOT_FOUND
     assert response.json() == {"detail": "No song with id 123 exists."}
