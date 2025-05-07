@@ -36,6 +36,12 @@ Start in production mode:
 
     fastapi run songs_api/main.py
 
+## Running tests
+
+To run all unit and integration tests, use this command:
+
+    pytest
+
 ## Deployment with docker
 
 A `Dockerfile` is provided to build a docker image for the songs API. Run this command to build the image:
