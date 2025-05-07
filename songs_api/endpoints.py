@@ -4,6 +4,7 @@ from fastapi import APIRouter, FastAPI
 from pydantic import BaseModel
 
 from songs_api.database_access import DatabaseAccess
+from songs_api.db_models import Song
 
 
 def build_app(database_access: DatabaseAccess) -> FastAPI:
@@ -15,15 +16,40 @@ def build_app(database_access: DatabaseAccess) -> FastAPI:
 def build_router(database_access: DatabaseAccess) -> APIRouter:
     router = APIRouter()
 
-    @router.get("/songs")
-    def get_songs() -> list[SongResponse]:
+    @router.get("/songs/")
+    def get_registered_songs() -> list[SongResponse]:
+        """Gets the registered songs. Filtering has not been implemented yet. For now, all songs are returned."""
         with database_access.get_session() as session:
             return [SongResponse.model_validate(song) for song in database_access.get_all_songs(session)]
+
+    @router.post("/songs/")
+    def register_song(song: SongRequest) -> SongResponse:
+        """Registers a song."""
+        with database_access.get_session() as session:
+            new_song = Song(
+                title=song.title,
+                composer=song.composer,
+                artist=song.artist,
+                year_of_release=song.year_of_release,
+            )
+            database_access.create(session, new_song)
+            return SongResponse.model_validate(new_song)
 
     return router
 
 
+class SongRequest(BaseModel):
+    """The model for a song used in requests of endpoints. It contains the same fields as `Song` except for the id."""
+
+    title: str
+    composer: str
+    artist: str | None
+    year_of_release: int
+
+
 class SongResponse(BaseModel):
+    """The model for a song used in responses of endpoints. It contains the same fields as `Song` including the id."""
+
     id: int
     title: str
     composer: str

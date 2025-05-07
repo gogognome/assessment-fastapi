@@ -41,3 +41,47 @@ def test_get_songs_when_songs_present(database_access: DatabaseAccess, client: T
             "year_of_release": 1979,
         },
     ]
+
+
+def test_registering_new_song_with_valid_parameters(database_access: DatabaseAccess, client: TestClient) -> None:
+    response = client.post(
+        "/songs",
+        json={
+            "title": "The Day After Eunice",
+            "composer": "Sander Kooijmans",
+            "artist": "Sander Kooijmans",
+            "year_of_release": 2025,
+        },
+    )
+    assert response.status_code == 200
+
+    assert response.json() == {
+        "artist": "Sander Kooijmans",
+        "composer": "Sander Kooijmans",
+        "id": 1,
+        "title": "The Day After Eunice",
+        "year_of_release": 2025,
+    }
+
+
+def test_registering_new_song_with_invalid_parameters(database_access: DatabaseAccess, client: TestClient) -> None:
+    response = client.post(
+        "/songs",
+        json={
+            "composer": "Sander Kooijmans",
+            "artist": "Sander Kooijmans",
+            "year_of_release": 2025,
+        },
+    )
+    assert response.status_code == 422
+
+    assert response.json() == {
+        "detail": [
+            {
+                "input": {"artist": "Sander Kooijmans", "composer": "Sander Kooijmans", "year_of_release": 2025},
+                "loc": ["body", "title"],
+                "msg": "Field required",
+                "type": "missing",
+            }
+        ]
+    }
