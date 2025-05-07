@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, FastAPI
+from fastapi import APIRouter, FastAPI, HTTPException
 from pydantic import BaseModel
 
 from songs_api.database_access import DatabaseAccess
@@ -34,6 +34,24 @@ def build_router(database_access: DatabaseAccess) -> APIRouter:
             )
             database_access.create(session, new_song)
             return SongResponse.model_validate(new_song)
+
+    @router.put("/songs/{song_id}")
+    def update_song(song_id: int, song: SongRequest) -> SongResponse:
+        """Updates a registered song."""
+        with database_access.get_session() as session:
+            updated_song = Song(
+                id=song_id,
+                title=song.title,
+                composer=song.composer,
+                artist=song.artist,
+                year_of_release=song.year_of_release,
+            )
+            try:
+                updated_song = database_access.update(session, updated_song)
+            except ValueError as e:
+                raise HTTPException(status_code=404, detail=str(e))
+
+            return SongResponse.model_validate(updated_song)
 
     return router
 

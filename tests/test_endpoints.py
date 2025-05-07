@@ -63,6 +63,13 @@ def test_registering_new_song_with_valid_parameters(database_access: DatabaseAcc
         "year_of_release": 2025,
     }
 
+    with database_access.get_session() as session:
+        database_song = database_access.get_song(session, 1)
+        assert database_song.title == "The Day After Eunice"
+        assert database_song.composer == "Sander Kooijmans"
+        assert database_song.artist == "Sander Kooijmans"
+        assert database_song.year_of_release == 2025
+
 
 def test_registering_new_song_with_invalid_parameters(database_access: DatabaseAccess, client: TestClient) -> None:
     response = client.post(
@@ -85,3 +92,47 @@ def test_registering_new_song_with_invalid_parameters(database_access: DatabaseA
             }
         ]
     }
+
+    with database_access.get_session() as session:
+        assert database_access.get_all_songs(session) == []
+
+
+def test_updating_existing_song(database_access: DatabaseAccess, client: TestClient) -> None:
+    with database_access.get_session() as session:
+        song = TdbSong.create(session, title="Song 1")
+        song_id = song.id
+
+    response = client.put(
+        f"/songs/{song_id}",
+        json={
+            "title": "Song 2",
+            "composer": "Sander Kooijmans",
+            "artist": "Sander Kooijmans",
+            "year_of_release": 2025,
+        },
+    )
+    assert response.status_code == 200
+
+    with database_access.get_session() as session:
+        database_song = database_access.get_song(session, 1)
+        assert database_song.title == "Song 2"
+        assert database_song.composer == "Sander Kooijmans"
+        assert database_song.artist == "Sander Kooijmans"
+        assert database_song.year_of_release == 2025
+
+
+def test_updating_non_existing_song(database_access: DatabaseAccess, client: TestClient) -> None:
+    response = client.put(
+        "/songs/123",
+        json={
+            "title": "Song 2",
+            "composer": "Sander Kooijmans",
+            "artist": "Sander Kooijmans",
+            "year_of_release": 2025,
+        },
+    )
+    assert response.status_code == 404
+    assert response.json() == {"detail": "No song with id 123 exists."}
+
+    with database_access.get_session() as session:
+        assert database_access.get_all_songs(session) == []

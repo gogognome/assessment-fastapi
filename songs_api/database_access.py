@@ -44,6 +44,16 @@ class DatabaseAccess:
         session.flush()
         return song
 
+    def update(self, session: Session, song: Song) -> Song:
+        exists = session.scalar(select(select(Song).filter_by(id=song.id).exists()))
+
+        if not exists:
+            raise ValueError(f"No song with id {song.id} exists.")
+
+        session.merge(song)
+        session.flush()
+        return song
+
     def get_song(self, session: Session, song_id: int) -> Song:
         """
         Gets the song with the specified id.
