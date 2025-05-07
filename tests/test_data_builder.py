@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from sqlalchemy.orm import Session
 
-from songs_api.models import Song
+from songs_api.db_models import Song
 
 
 class TdbSong:

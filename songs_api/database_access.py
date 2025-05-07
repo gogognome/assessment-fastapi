@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Iterator, Sequence
 from contextlib import contextmanager
 from pathlib import Path
@@ -6,7 +8,7 @@ from sqlalchemy import create_engine, select, text
 from sqlalchemy.orm import Session, sessionmaker
 
 from songs_api.config import Config
-from songs_api.models import Song
+from songs_api.db_models import Song
 
 
 class DatabaseAccess:
@@ -51,8 +53,8 @@ class DatabaseAccess:
         """
         return session.get_one(Song, song_id)
 
-    def get_all_songs(self, session: Session) -> Sequence[Song]:
-        return list(session.execute(select(Song)).scalars())
+    def get_all_songs(self, session: Session) -> list[Song]:
+        return list(session.execute(select(Song).order_by(Song.id)).scalars().all())
 
     @contextmanager
     def get_session(self) -> Iterator[Session]:

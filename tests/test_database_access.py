@@ -5,7 +5,7 @@ import pytest
 
 from songs_api.config import Config, DatabaseConfig
 from songs_api.database_access import DatabaseAccess
-from songs_api.models import Song
+from songs_api.db_models import Song
 from tests.conftest import apply_all_migrations
 
 create_table = "CREATE TABLE test (\n  id SERIAL PRIMARY KEY),  name VARCHAR(20) NOT NULL\n)"
