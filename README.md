@@ -3,19 +3,19 @@
 
 ## Introduction
 
-This application was developed as an assessment of fastAPI.
+This application was developed as an assessment of FastAPI.
 
 ## Activating the virtual environment and installing dependencies
 
 This project uses [Poetry](https://python-poetry.org/) to handle the virtual environment.
-I assume you have installed `Poetry` at this point.
+It is assumed that `Poetry` has been installed at this point.
 
-First, install the dependencies:
+Install the dependencies in a virtual environment of the project:
 
     poetry install --no-root
 
-The remainder of the instruction assume the virtual environment created by Poetry has been activated.
-One way of doing that is this way:
+The remainder of the instructions assume the virtual environment created by Poetry has been activated.
+One way of doing this is like this:
 
     poetry shell
 
@@ -34,7 +34,7 @@ Start in development mode:
 
 Start in production mode:
 
-    fastapi songs_api/main.py
+    fastapi run songs_api/main.py
 
 ## Deployment with docker
 
@@ -49,6 +49,8 @@ Start the docker containers with this command:
 
 The first time the application is run with docker compose, the PostgreSQL database will apply all mgirations scripts
 from the directory `migrations`.
+
+The application is now accessible at http://127.0.0.1/ (port 80).
 
 ## Example interaction with the API
 
