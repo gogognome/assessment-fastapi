@@ -136,3 +136,21 @@ def test_updating_non_existing_song(database_access: DatabaseAccess, client: Tes
 
     with database_access.get_session() as session:
         assert database_access.get_all_songs(session) == []
+
+
+def test_deleting_existing_song(database_access: DatabaseAccess, client: TestClient) -> None:
+    with database_access.get_session() as session:
+        song = TdbSong.create(session, title="Song 1")
+        song_id = song.id
+
+    response = client.delete(f"/songs/{song_id}")
+    assert response.status_code == 200
+
+    with database_access.get_session() as session:
+        assert database_access.get_all_songs(session) == []
+
+
+def test_deleting_non_existing_song(database_access: DatabaseAccess, client: TestClient) -> None:
+    response = client.delete("/songs/123")
+    assert response.status_code == 404
+    assert response.json() == {"detail": "No song with id 123 exists."}

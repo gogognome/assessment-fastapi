@@ -39,12 +39,12 @@ class DatabaseAccess:
         """
         return [stmt.strip() for stmt in (sql_statements.split(";")) if stmt.strip()]
 
-    def create(self, session: Session, song: Song) -> Song:
+    def create_song(self, session: Session, song: Song) -> Song:
         session.add(song)
         session.flush()
         return song
 
-    def update(self, session: Session, song: Song) -> Song:
+    def update_song(self, session: Session, song: Song) -> Song:
         exists = session.scalar(select(select(Song).filter_by(id=song.id).exists()))
 
         if not exists:
@@ -53,6 +53,15 @@ class DatabaseAccess:
         session.merge(song)
         session.flush()
         return song
+
+    def delete_song(self, session: Session, song_id: int) -> None:
+        song = session.get(Song, song_id)
+
+        if song is None:
+            raise ValueError(f"No song with id {song_id} exists.")
+
+        session.delete(song)
+        session.flush()
 
     def get_song(self, session: Session, song_id: int) -> Song:
         """

@@ -52,7 +52,7 @@ def test_create_song(database_access: DatabaseAccess) -> None:
 
     with database_access.get_session() as session:
         song_to_be_created = Song(**song_params)
-        song_id: int = database_access.create(session, song_to_be_created).id
+        song_id: int = database_access.create_song(session, song_to_be_created).id
 
     assert song_id is not None
 
@@ -67,7 +67,7 @@ def test_update_existing_song(database_access: DatabaseAccess) -> None:
         song = TdbSong.create(session, title="Song 1")
 
         song.title = "Song 2"
-        database_access.update(session, song)
+        database_access.update_song(session, song)
 
         updated_song = database_access.get_song(session, song.id)
         assert updated_song.title == "Song 2"
@@ -81,9 +81,26 @@ def test_update_non_existing_song(database_access: DatabaseAccess) -> None:
         with database_access.get_session() as session:
             song = Song(id=123, title="Song 1", composer="Roger Hodgson", artist="Supertramp", year_of_release=1979)
 
-            database_access.update(session, song)
+            database_access.update_song(session, song)
 
     assert str(exc_info.value) == "No song with id 123 exists."
 
     with database_access.get_session() as session:
         assert database_access.get_all_songs(session) == []  # The song was not created.
+
+
+def test_delete_existing_song(database_access: DatabaseAccess) -> None:
+    with database_access.get_session() as session:
+        song = TdbSong.create(session, title="Song 1")
+
+        database_access.delete_song(session, song.id)
+
+        assert database_access.get_all_songs(session) == []
+
+
+def test_delete_non_existing_song(database_access: DatabaseAccess) -> None:
+    with raises(ValueError) as exc_info:
+        with database_access.get_session() as session:
+            database_access.delete_song(session, 123)
+
+    assert str(exc_info.value) == "No song with id 123 exists."

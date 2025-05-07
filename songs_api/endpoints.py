@@ -32,7 +32,7 @@ def build_router(database_access: DatabaseAccess) -> APIRouter:
                 artist=song.artist,
                 year_of_release=song.year_of_release,
             )
-            database_access.create(session, new_song)
+            database_access.create_song(session, new_song)
             return SongResponse.model_validate(new_song)
 
     @router.put("/songs/{song_id}")
@@ -47,11 +47,20 @@ def build_router(database_access: DatabaseAccess) -> APIRouter:
                 year_of_release=song.year_of_release,
             )
             try:
-                updated_song = database_access.update(session, updated_song)
+                updated_song = database_access.update_song(session, updated_song)
             except ValueError as e:
                 raise HTTPException(status_code=404, detail=str(e))
 
             return SongResponse.model_validate(updated_song)
+
+    @router.delete("/songs/{song_id}")
+    def delete_song(song_id: int) -> None:
+        """Deletes a registered song."""
+        with database_access.get_session() as session:
+            try:
+                database_access.delete_song(session, song_id)
+            except ValueError as e:
+                raise HTTPException(status_code=404, detail=str(e))
 
     return router
 
