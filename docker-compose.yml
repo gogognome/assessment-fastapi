@@ -1,0 +1,30 @@
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: songs-production
+      POSTGRES_USER: songs
+      POSTGRES_PASSWORD: dgf32sd3gdfa3ffg80hs
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init-db:/docker-entrypoint-initdb.d
+  web:
+    image: songs:latest
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    volumes:
+      - ./docker/config.yml:/app/config.yml:ro
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - web
+
+volumes:
+  postgres_data:

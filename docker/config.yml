@@ -1,0 +1,3 @@
+# The URL matches the configuration in docker-compose.yml.
+database:
+  url: "postgresql://songs:dgf32sd3gdfa3ffg80hs@db:5432/songs-production"

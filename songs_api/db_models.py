@@ -13,7 +13,7 @@ class Song(Base):
 
     __tablename__ = "song"
 
-    id = mapped_column(Integer, primary_key=True)
+    id = mapped_column(Integer, primary_key=True, autoincrement=True)
     """The id of the song."""
 
     title = mapped_column(String(100), nullable=False)

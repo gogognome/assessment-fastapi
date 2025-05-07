@@ -36,6 +36,20 @@ Start in production mode:
 
     fastapi songs_api/main.py
 
+## Deployment with docker
+
+A `Dockerfile` is provided to build a docker image for the songs API. Run this command to build the image:
+
+    docker build . -t songs:latest
+
+A `docker-compose.yml` file is provided that starts up a PostgreSQL database, the FastAPI application and NGINX.
+Start the docker containers with this command:
+
+    docker compose up
+
+The first time the application is run with docker compose, the PostgreSQL database will apply all mgirations scripts
+from the directory `migrations`.
+
 ## Example interaction with the API
 
 Below is an example interation with the API generated with Pycharm's support to execute HTTP requests:
