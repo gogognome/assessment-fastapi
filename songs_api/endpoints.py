@@ -23,8 +23,8 @@ def build_router(database_access: DatabaseAccess) -> APIRouter:
         with database_access.get_session() as session:
             return [SongResponse.model_validate(song) for song in database_access.get_all_songs(session)]
 
-    @router.post("/songs/")
-    def register_song(song: SongRequest) -> SongResponse:
+    @router.post("/songs/", status_code=status.HTTP_201_CREATED)
+    def register_song(song: SongRequest) -> Response:
         """Registers a song."""
         with database_access.get_session() as session:
             new_song = Song(
