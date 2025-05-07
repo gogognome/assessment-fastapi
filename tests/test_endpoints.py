@@ -144,7 +144,8 @@ def test_deleting_existing_song(database_access: DatabaseAccess, client: TestCli
         song_id = song.id
 
     response = client.delete(f"/songs/{song_id}")
-    assert response.status_code == 200
+    assert response.status_code == 204
+    assert response.content == b""
 
     with database_access.get_session() as session:
         assert database_access.get_all_songs(session) == []

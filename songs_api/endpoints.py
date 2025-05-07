@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, FastAPI, HTTPException
+from fastapi import APIRouter, FastAPI, HTTPException, status
+from fastapi.responses import Response
 from pydantic import BaseModel
 
 from songs_api.database_access import DatabaseAccess
@@ -54,13 +55,15 @@ def build_router(database_access: DatabaseAccess) -> APIRouter:
             return SongResponse.model_validate(updated_song)
 
     @router.delete("/songs/{song_id}")
-    def delete_song(song_id: int) -> None:
+    def delete_song(song_id: int) -> Response:
         """Deletes a registered song."""
         with database_access.get_session() as session:
             try:
                 database_access.delete_song(session, song_id)
             except ValueError as e:
                 raise HTTPException(status_code=404, detail=str(e))
+
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
 
     return router
 
