@@ -1,9 +1,8 @@
-import os
 from collections.abc import Iterator
-from pathlib import Path
 
 import pytest
 
+from songs_api.apply_migrations import apply_all_migrations
 from songs_api.config import Config, DatabaseConfig
 from songs_api.database_access import DatabaseAccess
 
@@ -20,9 +19,3 @@ def database_access() -> Iterator[DatabaseAccess]:
         apply_all_migrations(database_access)
 
         yield database_access
-
-
-def apply_all_migrations(database_access: DatabaseAccess) -> None:
-    current_file_directory = os.path.dirname(os.path.abspath(__file__))
-    migrations_directory = Path(os.path.dirname(current_file_directory), "migrations")
-    database_access.apply_migrations(migrations_directory)
