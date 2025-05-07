@@ -72,18 +72,25 @@ class SongRequest(BaseModel):
     """The model for a song used in requests of endpoints. It contains the same fields as `Song` except for the id."""
 
     title: str
+    """The title of the song."""
+
     composer: str
+    """The name of the composer."""
+
     artist: str | None
+    """The name of the artist."""
+
     year_of_release: int
+    """
+    The year that the song was released. If the song was released more than once,
+    then this is the year it was released for the first time.
+    """
 
 
-class SongResponse(BaseModel):
+class SongResponse(SongRequest):
     """The model for a song used in responses of endpoints. It contains the same fields as `Song` including the id."""
 
     id: int
-    title: str
-    composer: str
-    artist: str | None
-    year_of_release: int
+    """The id of the song."""
 
     model_config = {"from_attributes": True}
