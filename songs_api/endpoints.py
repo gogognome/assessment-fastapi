@@ -8,7 +8,20 @@ from songs_api.database import DatabaseAccess, Song
 
 
 def build_app(database_access: DatabaseAccess) -> FastAPI:
-    app = FastAPI()
+    app = FastAPI(
+        title="Songs API",
+        description="An API for maintaining a collection of songs.",
+        version="1.0.0",
+        contact={
+            "name": "API Support",
+            "url": "https://www.example.com/support",
+            "email": "support@example.com",
+        },
+        license_info={
+            "name": "Apache 2.0",
+            "url": "https://www.apache.org/licenses/LICENSE-2.0.html",
+        },
+    )
     app.include_router(build_router(database_access))
     return app
 
@@ -84,6 +97,19 @@ class SongRequest(BaseModel):
     The year that the song was released. If the song was released more than once,
     then this is the year it was released for the first time.
     """
+
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "title": "The Day After Eunice",
+                    "composer": "Sander Kooijmans",
+                    "artist": "Sander Kooijmans",
+                    "year_of_release": 2025,
+                }
+            ]
+        }
+    }
 
 
 class SongResponse(SongRequest):
