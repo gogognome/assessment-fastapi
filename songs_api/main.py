@@ -1,5 +1,5 @@
 from songs_api.config import load_config
-from songs_api.database_access import DatabaseAccess
+from songs_api.database import DatabaseAccess
 from songs_api.endpoints import build_app
 
 try:

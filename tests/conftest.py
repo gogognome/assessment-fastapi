@@ -7,7 +7,7 @@ from starlette.testclient import TestClient
 
 from songs_api.apply_migrations import apply_all_migrations
 from songs_api.config import Config, DatabaseConfig
-from songs_api.database_access import DatabaseAccess
+from songs_api.database import DatabaseAccess
 from songs_api.endpoints import build_app
 
 

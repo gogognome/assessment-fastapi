@@ -1,7 +1,7 @@
 from fastapi import status
 from starlette.testclient import TestClient
 
-from songs_api.database_access import DatabaseAccess
+from songs_api.database import DatabaseAccess
 from tests.test_data_builder import TdbSong
 
 

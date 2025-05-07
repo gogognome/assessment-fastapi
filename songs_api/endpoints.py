@@ -4,8 +4,7 @@ from fastapi import APIRouter, FastAPI, HTTPException, status
 from fastapi.responses import Response
 from pydantic import BaseModel
 
-from songs_api.database_access import DatabaseAccess
-from songs_api.db_models import Song
+from songs_api.database import DatabaseAccess, Song
 
 
 def build_app(database_access: DatabaseAccess) -> FastAPI:

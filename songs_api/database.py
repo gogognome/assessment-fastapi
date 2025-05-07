@@ -4,14 +4,46 @@ from collections.abc import Iterator, Sequence
 from contextlib import contextmanager
 from pathlib import Path
 
-from sqlalchemy import create_engine, select, text
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy import Integer, SmallInteger, String, create_engine, select, text
+from sqlalchemy.orm import DeclarativeBase, Session, mapped_column, sessionmaker
 
 from songs_api.config import Config
-from songs_api.db_models import Song
+
+
+class Base(DeclarativeBase):
+    pass
+
+
+class Song(Base):
+    """This class defines a song."""
+
+    __tablename__ = "song"
+
+    id = mapped_column(Integer, primary_key=True, autoincrement=True)
+    """The id of the song."""
+
+    title = mapped_column(String(100), nullable=False)
+    """The title of the song."""
+
+    composer = mapped_column(String(100))
+    """The composer of the song."""
+
+    artist = mapped_column(String(100))
+    """The artist that performs the song."""
+
+    year_of_release = mapped_column(SmallInteger, nullable=False)
+    """
+    The year that the song was released. If the song was released more than once,
+    then this is the year it was released for the first time.
+    """
 
 
 class DatabaseAccess:
+    """
+    This class provides access to the database.
+    It implements the CRUD operations for songs and it offers a method to apply migrations to the database.
+    """
+
     def __init__(self, config: Config) -> None:
         self.engine = create_engine(config.database.url, echo=True)
         self.session_maker = sessionmaker(self.engine)

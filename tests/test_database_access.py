@@ -5,8 +5,7 @@ import pytest
 from _pytest.python_api import raises
 
 from songs_api.config import Config, DatabaseConfig
-from songs_api.database_access import DatabaseAccess
-from songs_api.db_models import Song
+from songs_api.database import DatabaseAccess, Song
 from tests.conftest import apply_all_migrations
 from tests.test_data_builder import TdbSong
 
