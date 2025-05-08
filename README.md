@@ -36,6 +36,8 @@ Start in production mode:
 
     fastapi run songs_api/main.py
 
+The API is available at http://127.0.0.1:8000/songs and Swagger documentation is available at http://127.0.0.1:8000/docs.
+
 ## Running tests
 
 To run all unit and integration tests, use this command:
@@ -56,7 +58,8 @@ Start the docker containers with this command:
 The first time the application is run with docker compose, the PostgreSQL database will apply all mgirations scripts
 from the directory `migrations`.
 
-The application is now accessible at http://127.0.0.1/ (port 80).
+The application is now accessible at http://127.0.0.1/songs (port 80) and Swagger documentation is available
+at http://127.0.0.1/docs.
 
 ## Example interaction with the API
 
